@@ -1,4 +1,5 @@
 # importaciones
+from operator import index
 from fastapi import FastAPI, status,HTTPException
 from typing import Optional
 import asyncio
@@ -29,7 +30,7 @@ async def bienbenido():
         "estatus":"200",
         }
     
-@app.get("/v1/parametro0b/{ib}",tags=['Parametro Obligatorio'])
+@app.get("/v1/parametro0b/{id}",tags=['Parametro Obligatorio'])
 async def consultauno(id:int):
     return {"mensaje":"usuario encontrado",
             "usuario":id,
@@ -49,14 +50,14 @@ async def consulta_dos(id:Optional[int]=None):
                 }
 
             ######################################################
-@app.get(" /vi/usuarios/", tags=['HTTP CRUD'])
+@app.get("/v1/usuarios/", tags=['HTTP CRUD'])
 async def leer_usuarios():
     return{
         "total":len(usuarios),
         "usuarios":usuarios,
         "status":"200"
     }
-@app.post(" /v1/usuarios/", tags=['HTTP CRUD'])
+@app.post("/v1/usuarios/", tags=['HTTP CRUD'])
 async def agregar_usuarios(usuario:dict):
     for usr in usuarios:
         if usr["id"] == usuario.get("id"):
@@ -73,6 +74,7 @@ async def agregar_usuarios(usuario:dict):
 async def actualizar_usuario(usuario_id: int, usuario_actualizado: dict):
     for index, usr in enumerate(usuarios):
         if usr["id"] == usuario_id:
+            usuario_actualizado["id"] = usuario_id
             usuarios[index] = usuario_actualizado
             return {
                 "mensaje": "Usuario actualizado",
