@@ -3,6 +3,7 @@ from operator import index
 from fastapi import FastAPI, status,HTTPException
 from typing import Optional
 import asyncio
+from pydantic import BaseModel, Field   
 
 app = FastAPI(
     title= "Mi primer API",
@@ -17,13 +18,19 @@ usuarios=[
     {"id":3,"nombre":"Sofi","edad":20}
 ]
 
+#Modelo de Validacion pydantic
+class crear_usuario(BaseModel):
+    id:int=Field(...,gt=0, description="Identificador de usuario")
+    nombre:str=Field(..., min_length=3, max_length=50, examples=["Juanita"])
+    edad:int=Field(..., ge=1, le=123, description="Edad valida entre 1 y 123")
+
 #endpoints
 @app.get("/")
-async def holamunddi():
+async def holamundo():
     return{"mensaje":"Hola mundo FastAP"}
         
-@app.get("/bienbenido")
-async def bienbenido():
+@app.get("/bienvenido")
+async def bienvenido():
     await asyncio
     return{
         "mensaje":"Bienvenido a FATAPI",
@@ -57,18 +64,18 @@ async def leer_usuarios():
         "usuarios":usuarios,
         "status":"200"
     }
-@app.post("/v1/usuarios/", tags=['HTTP CRUD'])
-async def agregar_usuarios(usuario:dict):
+@app.post("/v1/usuarios/", tags=['HTTP CRUD'] ,status_code=status.HTTP_201_CREATED)
+async def agregar_usuarios(usuario:crear_usuario):#usamos el modelo
     for usr in usuarios:
-        if usr["id"] == usuario.get("id"):
+        if usr["id"] == usuario.id:
             raise HTTPException(
                 status_code=400,
                 detail="El id ya existe"
             )
     usuarios.append(usuario)
     return{
-        "mmensaje":"Usuarios Creado",
-        "Datos nuevos": usuario
+        "mensaje":"Usuarios Creado",
+        "Usuario":usuario
     }
 @app.put("/v1/usuarios/{usuario_id}", tags=['HTTP CRUD'])
 async def actualizar_usuario(usuario_id: int, usuario_actualizado: dict):
