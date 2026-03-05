@@ -31,8 +31,8 @@ class crear_usuario(BaseModel):
 security = HTTPBasic()
 
 def verficar_peticion(credenciales:HTTPBasicCredentials=Depends(security)):
-    usuario_correcto= secrets.compare_digests(credenciales.username,"danielaandrade")
-    contrasena_correcta= secrets.compare_digests(credenciales.password,"123456")
+    usuario_correcto= secrets.compare_digest(credenciales.username,"danielaandrade")
+    contrasena_correcta= secrets.compare_digest(credenciales.password,"123456")
 
     if not(usuario_correcto and contrasena_correcta): 
         raise HTTPException(
