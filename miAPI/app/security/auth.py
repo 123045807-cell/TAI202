@@ -5,7 +5,7 @@ from fastapi import FastAPI, status,HTTPException, Depends
 #Seguridad HTTP Basic
 security = HTTPBasic()
 
-def verficar_peticion(credenciales:HTTPBasicCredentials=Depends(security)):
+def verificar_peticion(credenciales:HTTPBasicCredentials=Depends(security)):
     usuario_correcto= secrets.compare_digest(credenciales.username,"danielaandrade")
     contrasena_correcta= secrets.compare_digest(credenciales.password,"123456")
 

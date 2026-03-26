@@ -1,5 +1,14 @@
 from pydantic import BaseModel, Field 
+from typing import Optional
 #Modelo de Validacion pydantic
-class crear_usuario(BaseModel):
+class UsuarioBase(BaseModel):
     nombre:str=Field(..., min_length=3, max_length=50, examples=["Juanita"])
     edad:int=Field(..., ge=1, le=123, description="Edad valida entre 1 y 123")
+
+class actualizar_usuario(UsuarioBase): 
+    pass
+class crear_usuario(UsuarioBase):
+    pass
+class actualizar_usuario_parcial(BaseModel):
+    nombre: Optional[str]= Field(None, min_length=3, max_length=50, examples=["Juanita"])
+    edad: Optional[int]= Field(None, ge=1, le=123, description="Edad valida entre 1 y 123")
